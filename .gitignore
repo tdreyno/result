@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+/*.log
+.DS_Store
+.cache
+yarn-error.log
+/coverage
+/pkg
