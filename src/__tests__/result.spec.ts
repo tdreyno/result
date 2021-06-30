@@ -13,13 +13,13 @@ describe("Result", () => {
     })
 
     test("Err", () => {
-      expect(isErr(Err(null).map(i => i * 2))).toBeTruthy()
+      expect(isErr(Err<null, number>(null).map(i => i * 2))).toBeTruthy()
     })
   })
 
   describe("mapError", () => {
     test("Ok", () => {
-      expect(isOk(Ok(null).mapError(i => i * 2))).toBeTruthy()
+      expect(isOk(Ok<null, number>(null).mapError(i => i * 2))).toBeTruthy()
     })
 
     test("Err", () => {
@@ -81,7 +81,7 @@ describe("Result", () => {
     })
 
     test("Err", () => {
-      expect(isErr(Err(null).chain(i => i * 2))).toBeTruthy()
+      expect(isErr(Err<null, number>(null).chain(i => i * 2))).toBeTruthy()
     })
   })
 
