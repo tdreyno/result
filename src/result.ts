@@ -24,11 +24,11 @@ class Ok_<V, E> {
     return Ok(this.value)
   }
 
-  chain<E, V2>(fn: (a: V) => Result<E, V2>): Result<E, V2> {
+  chain<E2, V2>(fn: (a: V) => Result<E2, V2>): Result<E | E2, V2> {
     return fn(this.value)
   }
 
-  recover(_fn: (a: E) => Result<E, V>): Result<E, V> {
+  recover<E2, V2>(_fn: (a: E) => Result<E2, V2>): Result<E2, V | V2> {
     return Ok(this.value)
   }
 
@@ -66,11 +66,11 @@ class Err_<E, V> {
     return Err(this.error)
   }
 
-  chain(_fn: (a: V) => unknown): Result<E, V> {
+  chain<E2, V2>(_fn: (a: V) => Result<E2, V2>): Result<E | E2, V2> {
     return Err(this.error)
   }
 
-  recover(fn: (a: E) => Result<E, V>): Result<E, V> {
+  recover<E2, V2>(fn: (a: E) => Result<E2, V2>): Result<E2, V | V2> {
     return fn(this.error)
   }
 
