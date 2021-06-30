@@ -81,7 +81,7 @@ describe("Result", () => {
     })
 
     test("Err", () => {
-      expect(isErr(Err<null, number>(null).chain(i => i * 2))).toBeTruthy()
+      expect(isErr(Err<null, number>(null).chain(i => Ok(i * 2)))).toBeTruthy()
     })
   })
 

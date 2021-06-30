@@ -37,7 +37,7 @@ class Ok_<V, E> {
   }
 }
 
-export const Ok = <V, E = unknown>(v: V) => new Ok_<V, E>(v)
+export const Ok = <V, E = unknown>(v: V): Result<E, V> => new Ok_<V, E>(v)
 export type Ok<V, E> = Ok_<V, E>
 export const isOk = <V, E>(r: Result<E, V>): r is Ok_<V, E> => r instanceof Ok_
 
@@ -79,7 +79,7 @@ class Err_<E, V> {
   }
 }
 
-export const Err = <E, V = unknown>(e: E) => new Err_<E, V>(e)
+export const Err = <E, V = unknown>(e: E): Result<E, V> => new Err_<E, V>(e)
 export type Err<E, V> = Err_<E, V>
 export const isErr = <E, V>(r: Result<E, V>): r is Err_<E, V> =>
   r instanceof Err_
