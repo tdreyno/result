@@ -3,7 +3,13 @@ import { Ok, Err, isErr, isOk, combine, attempt } from "../result"
 describe("Result", () => {
   describe("map", () => {
     test("Ok", () => {
-      expect(Ok(5).map(i => i * 2).value).toBe(10)
+      const r = Ok(5).map(i => i * 2)
+
+      expect(isOk(r)).toBeTruthy()
+
+      if (isOk(r)) {
+        expect(r.value).toBe(10)
+      }
     })
 
     test("Err", () => {
@@ -17,7 +23,13 @@ describe("Result", () => {
     })
 
     test("Err", () => {
-      expect(Err(5).mapError(i => i * 2).error).toBe(10)
+      const r = Err(5).mapError(i => i * 2)
+
+      expect(isErr(r)).toBeTruthy()
+
+      if (isErr(r)) {
+        expect(r.error).toBe(10)
+      }
     })
   })
 
@@ -60,6 +72,7 @@ describe("Result", () => {
   describe("chain", () => {
     test("Ok", () => {
       const r = Ok(5).chain(i => Ok(i * 2))
+
       expect(isOk(r)).toBeTruthy()
 
       if (isOk(r)) {
@@ -74,11 +87,11 @@ describe("Result", () => {
 
   describe("recover", () => {
     test("Ok", () => {
-      expect(isOk(Ok(null).chainError(() => Err(null)))).toBeTruthy()
+      expect(isOk(Ok(null).recover(() => Err(null)))).toBeTruthy()
     })
 
     test("Err", () => {
-      const r = Err(5).chainError(i => Ok(i * 2))
+      const r = Err(5).recover(i => Ok(i * 2))
       expect(isOk(r)).toBeTruthy()
 
       if (isOk(r)) {

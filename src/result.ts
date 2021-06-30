@@ -2,11 +2,11 @@
 class Ok_<V, E> {
   constructor(public value: V) {}
 
-  map<V2>(fn: (a: V) => V2): Ok_<V2, E> {
-    return new Ok_(fn(this.value))
+  map<V2>(fn: (a: V) => V2): Result<E, V2> {
+    return Ok(fn(this.value))
   }
 
-  tap(fn: (a: V) => void): Ok_<V, E> {
+  tap(fn: (a: V) => void): Result<E, V> {
     fn(this.value)
 
     return this
@@ -16,11 +16,11 @@ class Ok_<V, E> {
     return this.value
   }
 
-  mapError(_fn: (e: E) => unknown): Ok_<V, E> {
+  mapError(_fn: (e: E) => unknown): Result<E, V> {
     return this
   }
 
-  tapError(_fn: (e: E) => void): Ok_<V, E> {
+  tapError(_fn: (e: E) => void): Result<E, V> {
     return this
   }
 
@@ -28,7 +28,7 @@ class Ok_<V, E> {
     return fn(this.value)
   }
 
-  chainError(_fn: (a: E) => unknown): Ok_<V, E> {
+  recover(_fn: (a: E) => unknown): Result<E, V> {
     return this
   }
 
@@ -44,11 +44,11 @@ export const isOk = <V, E>(r: Result<E, V>): r is Ok_<V, E> => r instanceof Ok_
 class Err_<E, V> {
   constructor(public error: E) {}
 
-  map(_fn: (a: V) => unknown): Err_<E, V> {
+  map(_fn: (a: V) => unknown): Result<E, V> {
     return this
   }
 
-  tap(_fn: (a: V) => void): Err_<E, V> {
+  tap(_fn: (a: V) => void): Result<E, V> {
     return this
   }
 
@@ -56,21 +56,21 @@ class Err_<E, V> {
     return a
   }
 
-  mapError<E2>(fn: (a: E) => E2): Err_<E2, V> {
-    return new Err_(fn(this.error))
+  mapError<E2>(fn: (a: E) => E2): Result<E2, V> {
+    return Err(fn(this.error))
   }
 
-  tapError(fn: (error: E) => void): Err_<E, V> {
+  tapError(fn: (error: E) => void): Result<E, V> {
     fn(this.error)
 
     return this
   }
 
-  chain(_fn: (a: V) => unknown): Err_<E, V> {
+  chain(_fn: (a: V) => unknown): Result<E, V> {
     return this
   }
 
-  chainError<E2, V2>(fn: (a: E) => Result<E2, V2>): Result<E2, V2> {
+  recover<E2, V2>(fn: (a: E) => Result<E2, V2>): Result<E2, V2> {
     return fn(this.error)
   }
 
