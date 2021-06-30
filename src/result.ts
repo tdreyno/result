@@ -28,7 +28,7 @@ class Ok_<V, E> {
     return fn(this.value)
   }
 
-  recover(_fn: (a: E) => unknown): Result<E, V> {
+  recover(_fn: (a: E) => Result<E, V>): Result<E, V> {
     return this
   }
 
@@ -70,7 +70,7 @@ class Err_<E, V> {
     return this
   }
 
-  recover<E2, V2>(fn: (a: E) => Result<E2, V2>): Result<E2, V2> {
+  recover(fn: (a: E) => Result<E, V>): Result<E, V> {
     return fn(this.error)
   }
 
