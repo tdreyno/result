@@ -9,7 +9,7 @@ class Ok_<V, E> {
   tap(fn: (a: V) => void): Result<E, V> {
     fn(this.value)
 
-    return this
+    return Ok(this.value)
   }
 
   getOrElse(_a: V): V {
@@ -17,11 +17,11 @@ class Ok_<V, E> {
   }
 
   mapError(_fn: (e: E) => unknown): Result<E, V> {
-    return this
+    return Ok(this.value)
   }
 
   tapError(_fn: (e: E) => void): Result<E, V> {
-    return this
+    return Ok(this.value)
   }
 
   chain<E, V2>(fn: (a: V) => Result<E, V2>): Result<E, V2> {
@@ -29,7 +29,7 @@ class Ok_<V, E> {
   }
 
   recover(_fn: (a: E) => Result<E, V>): Result<E, V> {
-    return this
+    return Ok(this.value)
   }
 
   fold<R>(okFn: (a: V) => R, _errFn: (e: R) => R): R {
@@ -44,12 +44,12 @@ export const isOk = <V, E>(r: Result<E, V>): r is Ok_<V, E> => r instanceof Ok_
 class Err_<E, V> {
   constructor(public error: E) {}
 
-  map(_fn: (a: V) => unknown): Result<E, V> {
-    return this
+  map<V2>(_fn: (a: V) => V2): Result<E, V2> {
+    return Err(this.error)
   }
 
   tap(_fn: (a: V) => void): Result<E, V> {
-    return this
+    return Err(this.error)
   }
 
   getOrElse(a: V): V {
@@ -63,11 +63,11 @@ class Err_<E, V> {
   tapError(fn: (error: E) => void): Result<E, V> {
     fn(this.error)
 
-    return this
+    return Err(this.error)
   }
 
   chain(_fn: (a: V) => unknown): Result<E, V> {
-    return this
+    return Err(this.error)
   }
 
   recover(fn: (a: E) => Result<E, V>): Result<E, V> {
