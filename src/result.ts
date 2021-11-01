@@ -103,6 +103,6 @@ export const attempt = <V, E = unknown>(fn: () => V): Result<E, V> => {
   try {
     return Ok(fn())
   } catch (e) {
-    return Err(e)
+    return Err(e as E)
   }
 }
