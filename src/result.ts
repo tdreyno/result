@@ -106,3 +106,10 @@ export const attempt = <V, E = unknown>(fn: () => V): Result<E, V> => {
     return Err(e as E)
   }
 }
+
+export const fromPromise = async <V>(
+  promiseOrFn: Promise<V> | (() => Promise<V>),
+): Promise<Result<unknown, V>> =>
+  (promiseOrFn instanceof Promise ? promiseOrFn : promiseOrFn())
+    .then(v => Ok(v))
+    .catch(e => Err(e))
