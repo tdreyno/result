@@ -32,7 +32,7 @@ class Ok_<V, E> {
     return Ok(this.value)
   }
 
-  fold<R>(okFn: (a: V) => R, _errFn: (e: R) => R): R {
+  fold<R>(okFn: (a: V) => R, _errFn: (e: E) => R): R {
     return okFn(this.value)
   }
 }
