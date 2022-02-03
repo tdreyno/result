@@ -6,6 +6,10 @@ class Ok_<V, E> {
     return Ok(fn(this.value))
   }
 
+  mapPromise<V2>(fn: (a: V) => Promise<V2>): Promise<Result<E, V2>> {
+    return fromPromise(fn(this.value))
+  }
+
   tap(fn: (a: V) => void): Result<E, V> {
     fn(this.value)
 
@@ -28,8 +32,18 @@ class Ok_<V, E> {
     return fn(this.value)
   }
 
-  recover<E2, V2>(_fn: (a: E) => Result<E2, V2>): Result<E2, V | V2> {
+  chainPromise<E2, V2>(
+    fn: (a: V) => Promise<Result<E2, V2>>,
+  ): Promise<Result<E | E2, V2>> {
+    return fn(this.value)
+  }
+
+  recover(_fn: (a: E) => Result<E, V>): Result<E, V> {
     return Ok(this.value)
+  }
+
+  recoverPromise(_fn: (a: E) => Promise<Result<E, V>>): Promise<Result<E, V>> {
+    return Promise.resolve(Ok(this.value))
   }
 
   fold<R>(okFn: (a: V) => R, _errFn: (e: E) => R): R {
@@ -46,6 +60,10 @@ class Err_<E, V> {
 
   map<V2>(_fn: (a: V) => V2): Result<E, V2> {
     return Err(this.error)
+  }
+
+  mapPromise<V2>(_fn: (a: V) => Promise<V2>): Promise<Result<E, V2>> {
+    return Promise.resolve(Err(this.error))
   }
 
   tap(_fn: (a: V) => void): Result<E, V> {
@@ -70,7 +88,17 @@ class Err_<E, V> {
     return Err(this.error)
   }
 
-  recover<E2, V2>(fn: (a: E) => Result<E2, V2>): Result<E2, V | V2> {
+  mapChain<E2, V2>(
+    _fn: (a: V) => Promise<Result<E2, V2>>,
+  ): Promise<Result<E | E2, V2>> {
+    return Promise.resolve(Err(this.error))
+  }
+
+  recover(fn: (a: E) => Result<E, V>): Result<E, V> {
+    return fn(this.error)
+  }
+
+  recoverPromise(fn: (a: E) => Promise<Result<E, V>>): Promise<Result<E, V>> {
     return fn(this.error)
   }
 
@@ -107,9 +135,9 @@ export const attempt = <V, E = unknown>(fn: () => V): Result<E, V> => {
   }
 }
 
-export const fromPromise = async <V>(
+export const fromPromise = async <V, E = unknown>(
   promiseOrFn: Promise<V> | (() => Promise<V>),
-): Promise<Result<unknown, V>> =>
+): Promise<Result<E, V>> =>
   (promiseOrFn instanceof Promise ? promiseOrFn : promiseOrFn())
-    .then(v => Ok(v))
-    .catch(e => Err(e))
+    .then(v => Ok<V, E>(v))
+    .catch((e: E) => Err(e))
