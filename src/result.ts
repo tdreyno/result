@@ -49,6 +49,10 @@ class Ok_<V, E> {
   fold<R>(okFn: (a: V) => R, _errFn: (e: E) => R): R {
     return okFn(this.value)
   }
+
+  unwrap(_withDefault?: (e: E) => V): V {
+    return this.value
+  }
 }
 
 export const Ok = <V, E = unknown>(v: V): Result<E, V> => new Ok_<V, E>(v)
@@ -104,6 +108,14 @@ class Err_<E, V> {
 
   fold<R>(_okFn: (a: V) => R, errFn: (e: E) => R): R {
     return errFn(this.error)
+  }
+
+  unwrap(_withDefault?: (e: E) => V): V {
+    if (_withDefault) {
+      return _withDefault(this.error)
+    }
+
+    throw new Error(`Cannot unwrap Err result.`)
   }
 }
 
