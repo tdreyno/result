@@ -57,11 +57,16 @@ class Ok_<V, E> {
     return this.value
   }
 
-  partition<VS = V extends Array<infer U> ? U : never>(): PartitionedResults<
-    VS,
-    E
-  > {
-    return partition(Array.isArray(this.value) ? this.value : [this.value])
+  partition<
+    VS = V extends Array<Result<E, infer U>> ? U : never,
+  >(): PartitionedResults<VS, E> {
+    if (!Array.isArray(this.value)) {
+      throw new Error(
+        "Can only partition Ok results with an array of Result as the value",
+      )
+    }
+
+    return partition(this.value as Array<Result<E, VS>>)
   }
 }
 
@@ -128,10 +133,9 @@ class Err_<E, V> {
     throw new Error(`Cannot unwrap Err result.`)
   }
 
-  partition<VS = V extends Array<infer U> ? U : never>(): PartitionedResults<
-    VS,
-    E
-  > {
+  partition<
+    VS = V extends Array<Result<E, infer U>> ? U : never,
+  >(): PartitionedResults<VS, E> {
     return { items: [], errors: [this.error] }
   }
 }

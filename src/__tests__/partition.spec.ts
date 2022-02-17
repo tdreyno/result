@@ -1,4 +1,4 @@
-import { Ok, Err, partition } from "../result"
+import { Ok, Err, partition, Result } from "../result"
 
 describe("partition", () => {
   test("empty", () => {
@@ -29,25 +29,19 @@ describe("partition", () => {
     expect(errors).toEqual([2])
   })
 
-  test(".partition Ok then mixed values", () => {
-    const { items, errors } = Ok([1, Err(2), 3]).partition()
-
-    expect(items).toEqual([1, 3])
-    expect(errors).toEqual([2])
-  })
-
   test(".partition Ok then mixed results", () => {
-    const { items, errors } = Ok([Ok(1), Err(2), Ok(3)]).partition()
+    const { items, errors } = Ok<Result<number, number>[], number>([
+      Ok<number, number>(1),
+      Err<number, number>(2),
+      Ok<number, number>(3),
+    ]).partition()
 
     expect(items).toEqual([1, 3])
     expect(errors).toEqual([2])
   })
 
   test(".partition single", () => {
-    const { items, errors } = Ok(1).partition()
-
-    expect(items).toEqual([1])
-    expect(errors).toHaveLength(0)
+    expect(() => Ok(1).partition()).toThrowError()
   })
 
   test(".partition Err", () => {
