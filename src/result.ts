@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
+export type PartitionedResults<V, E> = { items: V[]; errors: E[] }
+
 class Ok_<V, E> {
   constructor(public value: V) {}
 
@@ -53,11 +56,18 @@ class Ok_<V, E> {
   unwrap(_withDefault?: (e: E) => V): V {
     return this.value
   }
+
+  partition<VS = V extends Array<infer U> ? U : never>(): PartitionedResults<
+    VS,
+    E
+  > {
+    return partition(Array.isArray(this.value) ? this.value : [this.value])
+  }
 }
 
 export const Ok = <V, E = unknown>(v: V): Result<E, V> => new Ok_<V, E>(v)
 export type Ok<V, E> = Ok_<V, E>
-export const isOk = <V, E>(r: Result<E, V>): r is Ok_<V, E> => r instanceof Ok_
+export const isOk = <V, E>(r: unknown): r is Ok_<V, E> => r instanceof Ok_
 
 class Err_<E, V> {
   constructor(public error: E) {}
@@ -117,12 +127,18 @@ class Err_<E, V> {
 
     throw new Error(`Cannot unwrap Err result.`)
   }
+
+  partition<VS = V extends Array<infer U> ? U : never>(): PartitionedResults<
+    VS,
+    E
+  > {
+    return { items: [], errors: [this.error] }
+  }
 }
 
 export const Err = <E, V = unknown>(e: E): Result<E, V> => new Err_<E, V>(e)
 export type Err<E, V> = Err_<E, V>
-export const isErr = <E, V>(r: Result<E, V>): r is Err_<E, V> =>
-  r instanceof Err_
+export const isErr = <E, V>(r: unknown): r is Err_<E, V> => r instanceof Err_
 
 export type Result<E, V> = Ok_<V, E> | Err_<E, V>
 
@@ -139,18 +155,20 @@ export const combine = <E, V>(items: Array<Result<E, V>>) =>
     return acc.map(i => [...i, r.value])
   }, Ok([]) as Result<E, V[]>)
 
-export const partition = <E, V>(items: Array<Result<E, V>>) =>
+export const partition = <E, V>(items: Array<V | Result<E, V>>) =>
   items.reduce(
     (acc, r) => {
-      if (isOk(r)) {
+      if (isErr(r)) {
+        acc.errors.push(r.error)
+      } else if (isOk(r)) {
         acc.items.push(r.value)
       } else {
-        acc.errors.push(r.error)
+        acc.items.push(r)
       }
 
       return acc
     },
-    { items: [] as V[], errors: [] as E[] },
+    { items: [], errors: [] } as PartitionedResults<V, E>,
   )
 
 export const attempt = <V, E = unknown>(fn: () => V): Result<E, V> => {
