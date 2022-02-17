@@ -139,6 +139,20 @@ export const combine = <E, V>(items: Array<Result<E, V>>) =>
     return acc.map(i => [...i, r.value])
   }, Ok([]) as Result<E, V[]>)
 
+export const partition = <E, V>(items: Array<Result<E, V>>) =>
+  items.reduce(
+    (acc, r) => {
+      if (isOk(r)) {
+        acc.items.push(r.value)
+      } else {
+        acc.errors.push(r.error)
+      }
+
+      return acc
+    },
+    { items: [] as V[], errors: [] as E[] },
+  )
+
 export const attempt = <V, E = unknown>(fn: () => V): Result<E, V> => {
   try {
     return Ok(fn())
