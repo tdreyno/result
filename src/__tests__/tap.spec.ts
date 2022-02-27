@@ -1,3 +1,4 @@
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 import { Ok, Err } from "../result"
 
 describe("tap", () => {

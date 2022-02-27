@@ -1,6 +1,7 @@
 {
   "name": "@tdreyno/result",
   "version": "0.0.0",
+  "sideEffects": false,
   "main": "build/index.js",
   "typings": "build/index.d.ts",
   "repository": "https://github.com/tdreyno/result.git",
@@ -56,6 +57,7 @@
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-tree-shaking": "^1.10.0",
     "gzip-size-cli": "^5.0.0",
     "husky": "^7.0.4",
     "jest": "^27.3.1",
@@ -66,8 +68,6 @@
     "ts-jest": "^27.0.7",
     "typescript": "^4.2.4"
   },
-  "dependencies": {},
-  "peerDependencies": {},
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint -c .eslintrc.js --ext .ts --ext .tsx src --fix",
@@ -78,7 +78,7 @@
     ]
   },
   "volta": {
-    "node": "14.11.0",
+    "node": "16.14.0",
     "yarn": "1.22.4"
   },
   "config": {

@@ -1,3 +1,4 @@
+/* eslint-disable tree-shaking/no-side-effects-in-initialization */
 import { isErr, isOk, fromPromise } from "../result"
 
 describe("toResult", () => {
