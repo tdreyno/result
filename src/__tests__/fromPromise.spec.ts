@@ -1,13 +1,13 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { isErr, isOk, fromPromise } from "../result"
+import { fromPromise } from "../fromPromise"
 
 describe("toResult", () => {
   test("ok", async () => {
     const r = await fromPromise(Promise.resolve(5))
 
-    expect(isOk(r)).toBeTruthy()
+    expect(r.ok).toBeTruthy()
 
-    if (isOk(r)) {
+    if (r.ok) {
       expect(r.value).toBe(5)
     }
   })
@@ -15,9 +15,9 @@ describe("toResult", () => {
   test("err", async () => {
     const r = await fromPromise(Promise.reject(5))
 
-    expect(isErr(r)).toBeTruthy()
+    expect(!r.ok).toBeTruthy()
 
-    if (isErr(r)) {
+    if (!r.ok) {
       expect(r.error).toBe(5)
     }
   })

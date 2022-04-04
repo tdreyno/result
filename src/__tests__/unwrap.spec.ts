@@ -1,17 +1,20 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err } from "../result"
+
+import { err, ok } from "../result"
+
+import { unwrap } from "../unwrap"
 
 describe("upwrap", () => {
   test("ok", () => {
-    const r = Ok(5).unwrap()
+    const r = unwrap(ok(5))
     expect(r).toBe(5)
   })
 
   test("err", () => {
-    expect(() => Err(5).unwrap()).toThrow()
+    expect(() => unwrap(err(5))).toThrow()
   })
 
   test("err with default", () => {
-    expect(Err(5).unwrap(e => e * 2)).toBe(10)
+    expect(unwrap(err(5), e => e * 2)).toBe(10)
   })
 })

@@ -1,18 +1,22 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err, isErr, isOk } from "../result"
+
+import { err, ok } from "../result"
+
+import { chain } from "../chain"
 
 describe("chain", () => {
   test("Ok", () => {
-    const r = Ok(5).chain(i => Ok(i * 2))
+    const r = chain(i => ok(i * 2), ok(5))
 
-    expect(isOk(r)).toBeTruthy()
+    expect(r.ok).toBeTruthy()
 
-    if (isOk(r)) {
+    if (r.ok) {
       expect(r.value).toBe(10)
     }
   })
 
   test("Err", () => {
-    expect(isErr(Err<null, number>(null).chain(i => Ok(i * 2)))).toBeTruthy()
+    const result = err<null, number>(null)
+    expect(chain(i => ok(i * 2), result).ok).toBeFalsy()
   })
 })

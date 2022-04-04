@@ -1,17 +1,23 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err, isErr, isOk } from "../result"
+
+import { err, ok } from "../result"
+
+import { mapError } from "../map"
 
 describe("mapError", () => {
   test("Ok", () => {
-    expect(isOk(Ok<null, number>(null).mapError(i => i * 2))).toBeTruthy()
+    const resultA = ok<null, number>(null)
+    const resultB = mapError(i => i * 2, resultA)
+
+    expect(resultB.ok).toBeTruthy()
   })
 
   test("Err", () => {
-    const r = Err(5).mapError(i => i * 2)
+    const r = mapError(i => i * 2, err(5))
 
-    expect(isErr(r)).toBeTruthy()
+    expect(r.ok).toBeFalsy()
 
-    if (isErr(r)) {
+    if (!r.ok) {
       expect(r.error).toBe(10)
     }
   })

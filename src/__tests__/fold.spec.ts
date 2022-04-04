@@ -1,12 +1,15 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err } from "../result"
+
+import { err, ok } from "../result"
+
+import { fold } from "../fold"
 
 describe("fold", () => {
   test("ok", () => {
     const okFn = jest.fn()
     const errFn = jest.fn()
 
-    const r = Ok(5).fold(
+    const r = fold(
       v => {
         okFn(v)
 
@@ -17,6 +20,7 @@ describe("fold", () => {
 
         return 0
       },
+      ok(5),
     )
 
     expect(okFn).toHaveBeenCalledWith(5)
@@ -28,7 +32,7 @@ describe("fold", () => {
     const okFn = jest.fn()
     const errFn = jest.fn()
 
-    const r = Err(5).fold(
+    const r = fold(
       v => {
         okFn(v)
 
@@ -39,6 +43,7 @@ describe("fold", () => {
 
         return e * 2
       },
+      err(5),
     )
 
     expect(okFn).not.toHaveBeenCalledWith()

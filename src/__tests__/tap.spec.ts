@@ -1,11 +1,14 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err } from "../result"
+
+import { err, ok } from "../result"
+
+import { tap } from "../tap"
 
 describe("tap", () => {
   test("Ok", () => {
     const fn = jest.fn()
 
-    Ok(5).tap(fn)
+    tap(fn, ok(5))
 
     expect(fn).toHaveBeenCalledWith(5)
   })
@@ -13,7 +16,7 @@ describe("tap", () => {
   test("Err", () => {
     const fn = jest.fn()
 
-    Err(null).tap(fn)
+    tap(fn, err(null))
 
     expect(fn).not.toHaveBeenCalledWith()
   })

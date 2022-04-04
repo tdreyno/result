@@ -1,16 +1,19 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { Ok, Err, isOk } from "../result"
+
+import { err, ok } from "../result"
+
+import { recover } from "../recover"
 
 describe("recover", () => {
   test("Ok", () => {
-    expect(isOk(Ok(null).recover(() => Err(null)))).toBeTruthy()
+    expect(recover(() => err(null), ok(null)).ok).toBeTruthy()
   })
 
   test("Err", () => {
-    const r = Err(5).recover(i => Ok(i * 2))
-    expect(isOk(r)).toBeTruthy()
+    const r = recover(i => ok(i * 2), err(5))
+    expect(r.ok).toBeTruthy()
 
-    if (isOk(r)) {
+    if (r.ok) {
       expect(r.value).toBe(10)
     }
   })

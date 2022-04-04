@@ -1,13 +1,14 @@
 /* eslint-disable tree-shaking/no-side-effects-in-initialization */
-import { isErr, isOk, attempt } from "../result"
+
+import { attempt } from "../attempt"
 
 describe("attempt", () => {
   test("ok", () => {
     const r = attempt(() => 5)
 
-    expect(isOk(r)).toBeTruthy()
+    expect(r.ok).toBeTruthy()
 
-    if (isOk(r)) {
+    if (r.ok) {
       expect(r.value).toBe(5)
     }
   })
@@ -17,9 +18,9 @@ describe("attempt", () => {
       throw 5
     })
 
-    expect(isErr(r)).toBeTruthy()
+    expect(!r.ok).toBeTruthy()
 
-    if (isErr(r)) {
+    if (!r.ok) {
       expect(r.error).toBe(5)
     }
   })
